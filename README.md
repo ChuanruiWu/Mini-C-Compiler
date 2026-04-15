@@ -1,77 +1,109 @@
-# Mini C Compiler
+# Mini-C-Compiler
 
-## 项目简介
+一个用于学习编译原理的 Mini C 编译器示例，使用 C++ 实现了从词法分析到中间代码优化的核心流程。
 
-Mini C Compiler 是一个简单的 C 语言编译器，完全由 C++ 编写，从零开始实现了 C 语言的编译过程。项目旨在帮助学习编译原理与实现，并提供一个简洁、易于理解的编译器实现示例。
-## 文法介绍
-Mini C Compiler 实现的编译语言的文法包括C语言风格的变量声明，四则运算，布尔运算，for，while循环，if语句等
-## 功能实现
+## 项目目标
 
-- **词法分析**  
-  对 C 语言源代码进行词法分析，生成标记（Token）序列。
+- 演示一个教学型编译器的完整前端流程
+- 便于理解 LR 语法分析与语义动作
+- 通过四元式与 DAG 优化展示中间表示处理
 
-- **语法分析&语义分析**  
-  通过文法的Action和Goto表进行语法分析，确保源代码的语法正确性同时检查变量声明、作用域以及类型匹配等语义问题。
+## 已实现能力
 
-- **中间代码生成**  
-  生成中间表示，以便后续处理。
+- **词法分析**：对源程序进行扫描并生成 Token 序列与符号表  
+- **语法分析**：基于 Action/Goto 表进行 LR 分析  
+- **语义分析**：进行变量声明、类型与作用域等基础检查  
+- **中间代码生成**：生成四元式中间表示  
+- **中间代码优化**：按基本块进行 DAG 优化  
 
-- **中间代码优化**  
-  对生成的中间代码进行DAG优化。
+## 支持语法（概要）
+
+可在 `grammar.txt` 查看完整文法，当前覆盖：
+
+- 变量声明与函数声明/定义（`int/float/double/void`）
+- 表达式：`+ - * /` 与比较运算（`> < >= <= == !=`）
+- 语句：赋值、`if/else`、`while`、`return`
+- 函数调用与参数列表
 
 ## 项目结构
+
+```text
+Mini-C-Compiler
+├─ ActionAndGoto.txt         # LR 分析表
+├─ grammar.txt               # 文法定义
+├─ tablist.txt               # 项目集相关数据
+├─ text.txt                  # 示例输入程序
+├─ textgra.txt               # 文法测试输入
+└─ src
+   ├─ main.cpp
+   ├─ GrammerAnalyzer        # 文法分析与表生成
+   │  ├─ analys_gramer.cpp
+   │  └─ selectAndtable.h
+   ├─ LexicalAnalyzer        # 词法分析
+   │  ├─ lexical.cpp
+   │  └─ lexical.h
+   ├─ Parser                 # LR 语法分析 + 语义分析
+   │  ├─ analys_LR.cpp
+   │  └─ analys_LR.h
+   ├─ IntermediateCode       # 四元式与基本块
+   │  ├─ common.cpp
+   │  ├─ common.h
+   │  ├─ IntermediateCode.cpp
+   │  └─ IntermediateCode.h
+   └─ Optimize               # DAG 优化
+      ├─ optimize.cpp
+      └─ optimize.h
 ```
-Mini C Compile:
-│  ActionAndGoto.txt #Action和Goto表
-│  grammar.txt       #Mini C 文法规则
-│  tablist.txt       #项目集
-│  text.txt          #测试程序
-│  textgra.txt       #测试文法
-└─src
-    │  main.cpp  #主程序，这里打印了每个部分的内容，可根据需求进行修改。
-    │  
-    ├─GrammerAnalyzer #文法分析部分，通过LL(1) or LR(1)分析对grammar.txt当中的文法规则进行分析生成action和goto表以及项目集(可选)
-    │      analys_gramer.cpp
-    │      selectAndtable.h
-    │      
-    ├─IntermediateCode #中间语言部分，本编译器使用四元式作为中间语言，同时通过语义分析生成基本块
-    │      common.cpp
-    │      common.h
-    │      IntermediateCode.cpp
-    │      IntermediateCode.h
-    │      
-    ├─LexicalAnalyzer #词法分析 对 C 语言源代码进行词法分析，生成标记（Token）序列。
-    │      lexical.cpp
-    │      lexical.h
-    │      
-    ├─Optimize        #通过DAG优化对生成的中间语言进行优化。
-    │      optimize.cpp
-    │      optimize.h
-    │      
-    └─Parser         #编译器主体部分，读取程序文件，使用LR分析对程序先进行词法分析，随后在进行语法分析的同时进行语义分析。
-            analys_LR.cpp
-            analys_LR.h
 
+## 快速开始
+
+### 1) 克隆仓库
+
+```bash
+git clone https://github.com/ChuanruiWu/Mini-C-Compiler.git
+cd Mini-C-Compiler
 ```
-## 构建与运行
 
-### 先决条件
+### 2) 编译（示例）
 
-- 支持 C++11 或更高版本的编译器
+> 该项目主要按教学/实验环境编写，不同编译器可能存在兼容差异（如 `sprintf_s` 等）。  
+> 建议优先使用 Visual Studio（MSVC）环境构建。
 
-### 构建步骤
+在支持环境下，可参考如下命令手动编译：
 
-1. 克隆仓库：
+```bash
+g++ -std=c++17 \
+  src/main.cpp \
+  src/Parser/analys_LR.cpp \
+  src/LexicalAnalyzer/lexical.cpp \
+  src/IntermediateCode/common.cpp \
+  src/IntermediateCode/IntermediateCode.cpp \
+  src/Optimize/optimize.cpp \
+  src/GrammerAnalyzer/analys_gramer.cpp \
+  -Isrc/Parser -Isrc/LexicalAnalyzer -Isrc/GrammerAnalyzer -Isrc/IntermediateCode -Isrc/Optimize \
+  -o mini_c_compiler
+```
 
-   ```bash
-   git clone https://github.com/TruryWu/Mini-C-Compiler.git
+### 3) 运行
 
-2. 读取文法规则
+程序默认读取仓库根目录下的 `text.txt`：
 
-   使用selectAndtable.h中的GrammarAnalyzerLR或者GrammarAnalyzerLL类对文法grammar进行分析生成ActionAndGoto表
+```bash
+./mini_c_compiler
+```
 
-3. 对测试程序进行编译
-   
-   先使用lexical.h中的Scan类对测序程序text.txt进行词法分析，然后用改Scan类初始化analys_LR.h中的Parser类，随后使用Parser类进行编译。
-  
-   详细使用过程可见main.cpp中的调用过程。
+运行后会输出：
+
+- Token 序列与符号表
+- 语义分析相关信息
+- 原始四元式、基本块划分结果与优化后结果
+
+## 使用说明
+
+- 如需替换测试程序，直接修改 `text.txt`。  
+- 如需调整语法规则，修改 `grammar.txt`，并通过 `GrammerAnalyzer` 重新生成分析表。  
+- `main.cpp` 中已串联词法、语法、语义、中间代码和优化流程，可作为调用示例。  
+
+## 备注
+
+本项目偏向教学用途，当前重点是编译流程演示，工程化能力（跨平台构建、自动化测试等）仍可继续完善。欢迎提交 Issue 或 PR 共同改进。
