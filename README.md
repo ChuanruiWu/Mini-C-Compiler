@@ -64,12 +64,15 @@ git clone https://github.com/ChuanruiWu/Mini-C-Compiler.git
 cd Mini-C-Compiler
 ```
 
+> 若你使用的是其他 fork，请将上述地址替换为对应仓库 URL。
+
 ### 2) 编译（示例）
 
-> 该项目主要按教学/实验环境编写，不同编译器可能存在兼容差异（如 `sprintf_s` 等）。  
+> 该项目主要按教学/实验环境编写，不同编译器可能存在兼容差异。  
+> 例如在 GCC/Clang 下，可能遇到 `sprintf_s`（MSVC 扩展）与 `pow` 相关编译报错。  
 > 建议优先使用 Visual Studio（MSVC）环境构建。
 
-在支持环境下，可参考如下命令手动编译：
+在支持环境下，可参考如下命令手动编译（示例使用 C++17）：
 
 ```bash
 g++ -std=c++17 \
